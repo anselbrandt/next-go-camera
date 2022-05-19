@@ -118,7 +118,6 @@ const Home: NextPage = () => {
           {gsd && (
             <div style={{ marginBottom: "40px" }}>
               <div>client session description received...</div>
-              <div>Press play.</div>
             </div>
           )}
           <video ref={ref} width={640} height={360} />

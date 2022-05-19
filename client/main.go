@@ -76,10 +76,14 @@ func main() {
 
 		if connectionState == webrtc.ICEConnectionStateConnected {
 			fmt.Println("starting stream...")
-			_, err := exec.Command("/bin/sh", "./camerastream").Output()
+			_, err := exec.Command("/bin/sh", "./teststream").Output()
 			if err != nil {
 				log.Fatal(err)
 			}
+		}
+
+		if connectionState == webrtc.ICEConnectionStateDisconnected {
+			fmt.Println("do something if disconnected")
 		}
 
 		if connectionState == webrtc.ICEConnectionStateFailed {
