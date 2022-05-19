@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
+	"os/exec"
 
 	"github.com/anselbrandt/next-go-camera/client/handlers"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
@@ -17,6 +19,7 @@ var PUB_TOPIC = "webrtc/answer"
 var CLIENT_ID = "pi-camera"
 var STUN = "stun:stun.l.google.com:19302"
 var UDP_PORT = 5004
+var FFMPEG_COMMAND = "libcamera-vid -t 0 -o -| ffmpeg -framerate 30 -i - -c:v libx264 -g 10 -preset ultrafast -tune zerolatency -f rtp 'rtp://127.0.0.1:5004?pkt_size=1200'"
 
 func main() {
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
@@ -70,6 +73,14 @@ func main() {
 	// This will notify you when the peer has connected/disconnected
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
 		fmt.Printf("Connection State has changed %s \n", connectionState.String())
+
+		if connectionState == webrtc.ICEConnectionStateConnected {
+			out, err := exec.Command(FFMPEG_COMMAND).Output()
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(string(out))
+		}
 
 		if connectionState == webrtc.ICEConnectionStateFailed {
 			if closeErr := peerConnection.Close(); closeErr != nil {
