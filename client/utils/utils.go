@@ -33,11 +33,14 @@ func Encode(obj interface{}) string {
 
 func SelectScript() string {
 	script := "./teststream"
-	str, err := exec.Command("cat", "/sys/firmware/devicetree/base/model").Output()
+	cmd, err := exec.Command("cat", "/sys/firmware/devicetree/base/model").Output()
 	if err != nil {
 		return "./teststream"
 	}
-	if strings.Contains(string(str), "Raspberry") {
+	str := string(cmd)
+	fmt.Println(str)
+
+	if strings.Contains(str, "Raspberry") {
 		fmt.Println("camera stream selected")
 		return "./camerastream"
 	}
