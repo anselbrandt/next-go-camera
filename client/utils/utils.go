@@ -32,17 +32,17 @@ func Encode(obj interface{}) string {
 }
 
 func SelectScript() string {
-	script := "./teststream"
 	cmd, err := exec.Command("cat", "/sys/firmware/devicetree/base/model").Output()
 	if err != nil {
+		fmt.Println(err.Error())
 		return "./teststream"
 	}
 	str := string(cmd)
-	fmt.Println(str)
 
 	if strings.Contains(str, "Raspberry") {
 		fmt.Println("camera stream selected")
 		return "./camerastream"
 	}
-	return script
+	fmt.Println("Not a Raspberry Pi")
+	return "./teststream"
 }

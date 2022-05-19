@@ -22,6 +22,7 @@ var STUN = "stun:stun.l.google.com:19302"
 var UDP_PORT = 5004
 
 func main() {
+	script := utils.SelectScript()
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
@@ -76,7 +77,7 @@ func main() {
 
 		if connectionState == webrtc.ICEConnectionStateConnected {
 			fmt.Println("starting stream...")
-			_, err := exec.Command("/bin/sh", utils.SelectScript()).Output()
+			_, err := exec.Command("/bin/sh", script).Output()
 			if err != nil {
 				log.Fatal(err)
 			}
