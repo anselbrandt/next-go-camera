@@ -19,7 +19,7 @@ var PUB_TOPIC = "webrtc/answer"
 var CLIENT_ID = "pi-camera"
 var STUN = "stun:stun.l.google.com:19302"
 var UDP_PORT = 5004
-var FFMPEG_COMMAND = "libcamera-vid -t 0 -o -| ffmpeg -framerate 30 -i - -c:v libx264 -g 10 -preset ultrafast -tune zerolatency -f rtp 'rtp://127.0.0.1:5004?pkt_size=1200'"
+var FFMPEG_COMMAND = "ffmpeg -re -f lavfi -i testsrc=size=640x480:rate=30 -pix_fmt yuv420p -c:v libx264 -g 10 -preset ultrafast -tune zerolatency -f rtp 'rtp://127.0.0.1:5004?pkt_size=1200'"
 
 func main() {
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
@@ -75,11 +75,11 @@ func main() {
 		fmt.Printf("Connection State has changed %s \n", connectionState.String())
 
 		if connectionState == webrtc.ICEConnectionStateConnected {
-			out, err := exec.Command("libcamera-vid", "-t", "0", "-o", "-|", "ffmpeg", "-framerate", "30", "-i", "-", "-c:v", "libx264", "-g", "10", "-preset", "ultrafast", "-tune", "zerolatency", "-f", "rtp", "'rtp://127.0.0.1:5004?pkt_size=1200'").Output()
+			fmt.Println("starting stream...")
+			_, err := exec.Command("/bin/sh", "./stream").Output()
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println(string(out))
 		}
 
 		if connectionState == webrtc.ICEConnectionStateFailed {
