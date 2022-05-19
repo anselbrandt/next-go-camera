@@ -3,6 +3,9 @@ package utils
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"os/exec"
+	"strings"
 )
 
 // Decode decodes the input from base64
@@ -26,4 +29,17 @@ func Encode(obj interface{}) string {
 	}
 
 	return base64.StdEncoding.EncodeToString(b)
+}
+
+func SelectScript() string {
+	script := "./teststream"
+	str, err := exec.Command("cat", "/sys/firmware/devicetree/base/model").Output()
+	if err != nil {
+		return "./teststream"
+	}
+	if strings.Contains(string(str), "Raspberry") {
+		fmt.Println("camera stream selected")
+		return "./camerastream"
+	}
+	return script
 }

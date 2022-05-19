@@ -7,9 +7,9 @@ import (
 	"log"
 	"net"
 	"os/exec"
-	"strings"
 
 	"github.com/anselbrandt/next-go-camera/client/handlers"
+	"github.com/anselbrandt/next-go-camera/client/utils"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"github.com/pion/webrtc/v3"
 )
@@ -22,20 +22,6 @@ var STUN = "stun:stun.l.google.com:19302"
 var UDP_PORT = 5004
 
 func main() {
-	streaming_script := "./teststream"
-	str, err := exec.Command("cat", "/sys/firmware/devicetree/base/model").Output()
-	if err != nil {
-		streaming_script = "./teststream"
-	}
-	if strings.Contains(string(str), "Raspberry") {
-		streaming_script = "./camerastream"
-	}
-	if strings.Contains(streaming_script, "Raspberry") {
-		fmt.Println("camera stream selected")
-	} else {
-		fmt.Println("test stream selected")
-	}
-
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
@@ -90,7 +76,7 @@ func main() {
 
 		if connectionState == webrtc.ICEConnectionStateConnected {
 			fmt.Println("starting stream...")
-			_, err := exec.Command("/bin/sh", streaming_script).Output()
+			_, err := exec.Command("/bin/sh", utils.SelectScript()).Output()
 			if err != nil {
 				log.Fatal(err)
 			}
