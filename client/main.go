@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+
 	"github.com/anselbrandt/next-go-camera/client/handlers"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"github.com/pion/webrtc/v3"
@@ -15,6 +16,7 @@ var SUB_TOPIC = "webrtc/offer"
 var PUB_TOPIC = "webrtc/answer"
 var CLIENT_ID = "pi-camera"
 var STUN = "stun:stun.l.google.com:19302"
+var UDP_PORT = 5004
 
 func main() {
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
@@ -29,7 +31,10 @@ func main() {
 	}
 
 	// Open a UDP Listener for RTP Packets on port 5004
-	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 5004})
+	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: UDP_PORT})
+
+	fmt.Println("listening for UDP video on port", UDP_PORT)
+
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +45,7 @@ func main() {
 	}()
 
 	// Create a video track
-	videoTrack, err := webrtc.NewTrackLocalStaticRTP(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeVP8}, "video", "pion")
+	videoTrack, err := webrtc.NewTrackLocalStaticRTP(webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264}, "video", "pion")
 	if err != nil {
 		panic(err)
 	}
