@@ -75,7 +75,7 @@ func main() {
 		fmt.Printf("Connection State has changed %s \n", connectionState.String())
 
 		if connectionState == webrtc.ICEConnectionStateConnected {
-			out, err := exec.Command(FFMPEG_COMMAND).Output()
+			out, err := exec.Command("pwd").Output()
 			if err != nil {
 				log.Fatal(err)
 			}
