@@ -14,7 +14,7 @@ import (
 	"github.com/pion/webrtc/v3"
 )
 
-var BROKER = "tcp://mqtt.eclipseprojects.io:1883"
+var BROKER = "tcp://test.mosquitto.org:1883"
 var SUB_TOPIC = "webrtc/offer"
 var PUB_TOPIC = "webrtc/answer"
 var CLIENT_ID = "pi-camera"

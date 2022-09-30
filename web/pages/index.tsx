@@ -9,11 +9,11 @@ This is a public test MQTT broker service. It currently listens on the following
 443 : MQTT over encrypted WebSockets (note: URL must be /mqtt )
 */
 
-import React, { useEffect, useState, useRef, MutableRefObject } from "react";
+import mqtt from "mqtt";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
-import mqtt from "mqtt";
 import { isBrowser } from "../utils";
 
 const Home: NextPage = () => {
@@ -70,7 +70,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (isBrowser && bsd) {
-      const client = mqtt.connect("wss://mqtt.eclipseprojects.io:443/mqtt");
+      const client = mqtt.connect("wss://test.mosquitto.org:8081");
 
       const handleConnect = () => {
         client.subscribe("webrtc/answer", handleSubscribe);
